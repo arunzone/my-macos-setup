@@ -41,7 +41,7 @@
     - gradle
     - maven
     - node
-    - clojure
+    - golang
     - golang
     - kotlin
     - ruby
@@ -55,7 +55,6 @@
     - infrastructure-as-code
     - media
     - claude-code
-    - codex
 
   post_tasks:
 
