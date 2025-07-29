@@ -72,6 +72,10 @@
   community.general.homebrew_cask:
     name: google-drive
 
+- name: Install Slack
+  community.general.homebrew_cask:
+    name: slack
+
 - name: Install Wireshark packet analyzer
   community.general.homebrew_cask:
     name: wireshark
