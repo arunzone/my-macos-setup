@@ -38,6 +38,7 @@
     - vim
     - system
     - java
+    - ide
     - gradle
     - maven
     - node
@@ -55,7 +56,6 @@
     - infrastructure-as-code
     - media
     - claude-code
-    - windsurf
 
   post_tasks:
 

@@ -1,3 +1,0 @@
-- name: Install Windsurf
-  community.general.homebrew:
-    name: windsurf

@@ -1,0 +1,7 @@
+- name: Install PyCharm Community Edition
+  community.general.homebrew_cask:
+    name: pycharm-ce
+
+- name: Install Windsurf
+  community.general.homebrew:
+    name: windsurf
