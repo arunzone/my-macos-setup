@@ -87,29 +87,6 @@
       compinit
       fi
 
-- name: Install tmux terminal multiplexer
-  community.general.homebrew:
-    name: tmux
-
-- name: Setup tmux
-  ansible.builtin.blockinfile:
-    create: true
-    path: ~/.tmux.conf
-    mode: "0644"
-    block: |
-      bind c new-window -c "#{pane_current_path}"
-      bind '"' split-window -c "#{pane_current_path}"
-      bind % split-window -h -c "#{pane_current_path}"
-      setw -g mode-keys vi
-
-- name: Start tmux by default in Terminal.app
-  ansible.builtin.blockinfile:
-    path: ~/.zshrc
-    marker: "# {mark} ANSIBLE MANAGED BLOCK (tmux start)"
-    block: |
-      TERM=xterm &&
-      if [ "$TMUX" = "" ]; then tmux; fi
-
 - name: Install icdiff side-by-side diff tool
   community.general.homebrew:
     name: icdiff

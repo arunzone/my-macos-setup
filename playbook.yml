@@ -55,6 +55,7 @@
     - infrastructure-as-code
     - media
     - claude-code
+    - windsurf
 
   post_tasks:
 

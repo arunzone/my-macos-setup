@@ -25,3 +25,8 @@
 - name: Install OWASP Zap
   community.general.homebrew_cask:
     name: zap
+
+- name: Install KeePassXC using Homebrew
+  community.general.homebrew:
+    name: keepassxc
+    state: present
