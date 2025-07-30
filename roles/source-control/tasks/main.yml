@@ -1,3 +1,7 @@
 - name: Install git source control
   community.general.homebrew:
     name: git
+
+- name: Install tig text-mode interface for Git
+  community.general.homebrew:
+    name: tig
