@@ -19,6 +19,12 @@
 - name: Install pipx
   community.general.homebrew:
     name: pipx
+  register: pipx_install
+
+- name: Install pip-outdated via pipx
+  ansible.builtin.command:
+    cmd: pipx install pip-outdated
+  when: pipx_install is succeeded
 
 - name: Install vim plugin
   ansible.builtin.git:
