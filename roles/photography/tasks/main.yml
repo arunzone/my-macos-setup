@@ -1,0 +1,11 @@
+- name: Install Digikam
+  community.general.homebrew_cask:
+    name: digikam
+
+- name: Install Darktable
+  community.general.homebrew_cask:
+    name: darktable
+
+- name: Install Upscayl
+  community.general.homebrew_cask:
+    name: upscayl
