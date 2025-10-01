@@ -8,8 +8,8 @@
 
 - name: Install flutter
   ansible.builtin.command:
-    cmd: fvm install 3.19.5
-    creates: $HOME/fvm/versions/3.19.5
+    cmd: fvm install 3.29.3
+    creates: $HOME/fvm/versions/3.29.3
 
 - name: Update .zshrc
   ansible.builtin.blockinfile:

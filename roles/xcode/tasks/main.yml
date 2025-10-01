@@ -1,0 +1,68 @@
+---
+# Install and configure Xcode for macOS development
+
+- name: Ensure mas (Mac App Store CLI) is installed
+  community.general.homebrew:
+    name: mas
+    state: present
+
+- name: Check Mac App Store login status
+  ansible.builtin.command: mas account
+  register: mas_account
+  changed_when: false
+  failed_when: false
+
+- name: Set fact if signed in to Mac App Store
+  ansible.builtin.set_fact:
+    mas_signed_in: "{{ 'Not signed in' not in mas_account.stdout }}"
+
+- name: Show Mac App Store login reminder (if not signed in)
+  ansible.builtin.debug:
+    msg: >-
+      You are not signed in to the Mac App Store (mas). Please open the App Store and sign in.
+      After signing in, re-run this role to install Xcode automatically.
+  when: not mas_signed_in
+
+- name: Install Xcode from Mac App Store (if signed in)
+  community.general.mas:
+    id: 497799835
+    state: present
+  when: mas_signed_in
+
+- name: Wait for Xcode.app to appear (after mas install)
+  ansible.builtin.stat:
+    path: /Applications/Xcode.app/Contents/Developer
+  register: xcode_devdir
+  retries: 30
+  delay: 20
+  until: xcode_devdir.stat.exists or not mas_signed_in
+  changed_when: false
+
+- name: Get current developer directory
+  ansible.builtin.command: xcode-select -p
+  register: xcode_select_path
+  changed_when: false
+  failed_when: false
+
+- name: Set xcode-select to full Xcode app if installed
+  ansible.builtin.command: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+  when: xcode_devdir.stat.exists and xcode_select_path.stdout != '/Applications/Xcode.app/Contents/Developer'
+  become: true
+
+- name: Run first launch tasks (may be no-op if already done)
+  ansible.builtin.command: sudo xcodebuild -runFirstLaunch
+  become: true
+  changed_when: false
+  failed_when: false
+
+- name: Accept Xcode license (idempotent)
+  ansible.builtin.command: sudo xcodebuild -license accept
+  become: true
+  changed_when: false
+  failed_when: false
+
+- name: Accept Xcode license (idempotent)
+  ansible.builtin.command: xcodebuild -downloadPlatform iOS
+  become: true
+  changed_when: false
+  failed_when: false

@@ -53,6 +53,18 @@
   community.general.homebrew:
     name: coreutils
 
+- name: Ensure GNU coreutils (gnubin) are first in PATH for zsh
+  ansible.builtin.blockinfile:
+    create: true
+    path: ~/.zshrc
+    marker: "# {mark} ANSIBLE MANAGED BLOCK (coreutils-gnubin)"
+    mode: "0644"
+    block: |
+      # Prefer GNU coreutils over BSD equivalents (e.g., date, ls, cp)
+      if type brew &>/dev/null; then
+        export PATH="$(brew --prefix coreutils)/libexec/gnubin:$PATH"
+      fi
+
 - name: Install GNU implementation of sed
   community.general.homebrew:
     name: gnu-sed
