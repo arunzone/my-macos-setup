@@ -5,3 +5,7 @@
 - name: Install Windsurf
   community.general.homebrew:
     name: windsurf
+
+- name: Install intellij idea Community Edition
+  community.general.homebrew_cask:
+    name: intellij-idea-ce

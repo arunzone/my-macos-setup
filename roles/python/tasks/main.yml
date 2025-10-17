@@ -12,6 +12,10 @@
   community.general.homebrew:
     name: python
 
+- name: Install pyenv
+  community.general.homebrew:
+    name: pyenv
+
 - name: Install python-packaging
   community.general.homebrew:
     name: python-packaging
@@ -26,10 +30,21 @@
     cmd: pipx install pip-outdated
   when: pipx_install is succeeded
 
-- name: Install vim plugin
+- name: Ensure Vim bundle directory exists
+  ansible.builtin.file:
+    path: "~/.vim/bundle"
+    state: directory
+    mode: "0755"
+
+- name: Install vim plugin (retry on transient network errors)
   ansible.builtin.git:
     repo: "{{ item.repo }}"
     dest: "~/.vim/bundle/{{ item.dest }}"
     force: true
-  with_items:
-    - {repo: "https://github.com/Vimjas/vim-python-pep8-indent.git", dest: vim-python-pep8-indent}
+    version: HEAD
+  loop:
+    - { repo: "https://github.com/Vimjas/vim-python-pep8-indent.git", dest: "vim-python-pep8-indent" }
+  register: git_clone
+  retries: 5
+  delay: 10
+  until: git_clone is succeeded
