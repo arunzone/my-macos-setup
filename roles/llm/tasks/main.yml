@@ -1,0 +1,8 @@
+- name: Install llama.cpp
+  community.general.homebrew:
+    name: llama.cpp
+
+- name: Install Hugging Face CLI (huggingface-cli) via pipx
+  ansible.builtin.pip:
+    name: huggingface_hub
+    executable: pipx

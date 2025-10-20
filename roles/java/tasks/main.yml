@@ -12,9 +12,41 @@
       export PATH="$HOME/.jenv/bin:$PATH"
       eval "$(jenv init -)"
 
+- name: Enable jenv export plugin
+  ansible.builtin.command:
+    cmd: jenv enable-plugin export
+  args:
+    creates: ~/.jenv/plugins/export
+
 - name: Install current temurin
   community.general.homebrew_cask:
     name: temurin
+
+- name: Tap homebrew/cask-versions for additional JDK casks
+  community.general.homebrew_tap:
+    name: homebrew/cask-versions
+    state: present
+
+- name: Install Azul Zulu JDK 17
+  community.general.homebrew_cask:
+    name: zulu17
+
+- name: Discover Zulu 17 JDK home
+  ansible.builtin.find:
+    paths: /Library/Java/JavaVirtualMachines
+    patterns: "zulu-17*.jdk"
+    file_type: directory
+    recurse: false
+  register: zulu17_jdks
+
+- name: Set Zulu 17 home path
+  ansible.builtin.set_fact:
+    zulu17_home: "{{ (zulu17_jdks.files[0].path ~ '/Contents/Home') if (zulu17_jdks.matched|default(0) > 0) else omit }}"
+
+- name: Add Zulu 17 to jenv
+  ansible.builtin.command:
+    cmd: jenv add {{ zulu17_home }}
+  when: zulu17_home is defined
 
 - name: Install VisualVM
   community.general.homebrew_cask:

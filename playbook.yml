@@ -37,7 +37,7 @@
     - cli-tools
     - vim
     - system
-    - java
+    - { role: java, tags: ["java"] }
     - ide
     - gradle
     - maven
@@ -61,6 +61,7 @@
     - media
     - photography
     - claude-code
+    - { role: llm, tags: ["llm"] }
 
   post_tasks:
 
