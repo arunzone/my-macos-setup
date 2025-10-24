@@ -1,0 +1,30 @@
+---
+# Dependencies
+- name: Ensure Node.js is installed (required for cdklocal)
+  ansible.builtin.include_role:
+    name: node
+
+# Homebrew packages
+- name: Tap LocalStack Homebrew repository
+  community.general.homebrew_tap:
+    name: localstack/tap
+    state: present
+
+- name: Install LocalStack CLI via Homebrew
+  community.general.homebrew:
+    name: localstack-cli
+    state: present
+
+# Python packages
+- name: Install awscli-local
+  community.general.homebrew:
+    name: awscli-local
+    state: present
+
+# NPM packages
+- name: Install cdklocal globally via npm
+  community.general.npm:
+    name: aws-cdk-local
+    global: yes
+    state: present
+

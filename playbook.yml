@@ -58,6 +58,7 @@
     - security
     - internet
     - infrastructure-as-code
+    - { role: aws, tags: ["aws"] }
     - media
     - photography
     - claude-code
