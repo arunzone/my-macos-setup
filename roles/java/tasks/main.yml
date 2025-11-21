@@ -22,14 +22,9 @@
   community.general.homebrew_cask:
     name: temurin
 
-- name: Tap homebrew/cask-versions for additional JDK casks
-  community.general.homebrew_tap:
-    name: homebrew/cask-versions
-    state: present
-
 - name: Install Azul Zulu JDK 17
   community.general.homebrew_cask:
-    name: zulu17
+    name: zulu@17
 
 - name: Discover Zulu 17 JDK home
   ansible.builtin.find:

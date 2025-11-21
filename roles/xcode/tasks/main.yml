@@ -61,7 +61,7 @@
   changed_when: false
   failed_when: false
 
-- name: Accept Xcode license (idempotent)
+- name: Xcode download IOS
   ansible.builtin.command: xcodebuild -downloadPlatform iOS
   become: true
   changed_when: false

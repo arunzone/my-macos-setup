@@ -34,11 +34,11 @@
     - source-control
     - docker
     - python
-    - cli-tools
+    - { role: cli-tools, tags: ["cli-tools"] }
     - vim
     - system
     - { role: java, tags: ["java"] }
-    - ide
+    - { role: ide, tags: ["ide"] }
     - gradle
     - maven
     - node

@@ -6,6 +6,19 @@
   community.general.homebrew:
     name: windsurf
 
+- name: Install cline for vscode/windsurf code generation in background
+  community.general.npm:
+    name: cline
+    global: yes
+    state: present
+
 - name: Install intellij idea Community Edition
   community.general.homebrew_cask:
     name: intellij-idea-ce
+
+- name: Install Google's Gemini CLI
+  community.general.npm:
+    name: '@google/gemini-cli'
+    global: yes
+    state: present
+  tags: [ide, gemini-cli]

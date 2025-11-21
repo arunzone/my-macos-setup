@@ -152,6 +152,10 @@
   community.general.homebrew:
     name: thefuck
 
+- name: Install tree
+  community.general.homebrew:
+    name: tree
+
 - name: Setup thefuck
   ansible.builtin.blockinfile:
     path: ~/.zshrc
