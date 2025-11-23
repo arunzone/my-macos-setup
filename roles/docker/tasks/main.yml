@@ -6,6 +6,27 @@
   community.general.homebrew:
     name: docker-compose,colima
 
+- name: Install docker buildx plugin
+  community.general.homebrew:
+    name: docker-buildx
+
+- name: Ensure docker cli-plugins directory exists
+  ansible.builtin.file:
+    path: ~/.docker/cli-plugins
+    state: directory
+    mode: "0755"
+
+- name: Determine docker-buildx installation prefix
+  ansible.builtin.command: brew --prefix docker-buildx
+  register: docker_buildx_prefix
+  changed_when: false
+
+- name: Link docker-buildx into cli-plugins
+  ansible.builtin.file:
+    path: ~/.docker/cli-plugins/docker-buildx
+    state: link
+    src: "{{ docker_buildx_prefix.stdout }}/bin/docker-buildx"
+
 - name: Install lima-additional-guestagents
   community.general.homebrew:
     name: lima-additional-guestagents

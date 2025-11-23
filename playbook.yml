@@ -32,7 +32,7 @@
   roles:
 
     - source-control
-    - docker
+    - { role: docker, tags: ["docker"] }
     - python
     - { role: cli-tools, tags: ["cli-tools"] }
     - vim
@@ -42,7 +42,6 @@
     - gradle
     - maven
     - node
-    - golang
     - golang
     - kotlin
     - ruby
