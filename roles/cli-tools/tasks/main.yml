@@ -156,6 +156,10 @@
   community.general.homebrew:
     name: tree
 
+- name: Install DuckDB CLI
+  community.general.homebrew:
+    name: duckdb
+
 - name: Setup thefuck
   ansible.builtin.blockinfile:
     path: ~/.zshrc

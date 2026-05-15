@@ -19,3 +19,6 @@ brew doctor || true &&
 brew install python &&
 
 brew install ansible
+
+defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
