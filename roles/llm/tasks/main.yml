@@ -6,3 +6,8 @@
   ansible.builtin.pip:
     name: huggingface_hub
     executable: pipx
+
+- name: Install Claude Code Router
+  community.general.npm:
+    name: "@musistudio/claude-code-router"
+    global: true

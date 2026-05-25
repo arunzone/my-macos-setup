@@ -160,6 +160,30 @@
   community.general.homebrew:
     name: duckdb
 
+- name: Install 1Password CLI
+  community.general.homebrew_cask:
+    name: 1password-cli
+
+- name: Install iTerm2 shell integration and it2 utilities
+  ansible.builtin.shell: /bin/sh -c "$(curl -fsSL https://iterm2.com/shell_integration/install_shell_integration_and_utilities.sh)"
+  args:
+    creates: ~/.iterm2/it2copy
+
+# iTerm2 rewrites its plist on quit, so this only sticks if iTerm2 isn't running.
+# Restart iTerm2 after the playbook for the change to take effect.
+- name: Enable iTerm2 Python API
+  community.general.osx_defaults:
+    domain: com.googlecode.iterm2
+    key: EnableAPIServer
+    type: bool
+    value: true
+    state: present
+
+- name: Install it2 CLI for controlling iTerm2 via Python API
+  ansible.builtin.command: uv tool install it2
+  args:
+    creates: ~/.local/bin/it2
+
 - name: Setup thefuck
   ansible.builtin.blockinfile:
     path: ~/.zshrc

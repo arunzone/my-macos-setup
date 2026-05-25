@@ -25,6 +25,10 @@
     name: pipx
   register: pipx_install
 
+- name: Install uv (Python package and tool manager)
+  community.general.homebrew:
+    name: uv
+
 - name: Install pip-outdated via pipx
   ansible.builtin.command:
     cmd: pipx install pip-outdated

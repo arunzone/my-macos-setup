@@ -5,6 +5,11 @@
     name: node
 
 # Homebrew packages
+- name: Install AWS CLI v2
+  community.general.homebrew:
+    name: awscli
+    state: present
+
 - name: Tap LocalStack Homebrew repository
   community.general.homebrew_tap:
     name: localstack/tap
