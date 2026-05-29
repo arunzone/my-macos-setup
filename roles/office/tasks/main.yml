@@ -92,6 +92,10 @@
   community.general.homebrew_cask:
     name: chatgpt
 
+- name: Install Granola AI-powered notepad for meetings
+  community.general.homebrew_cask:
+    name: granola
+
 - name: Install ios-deploy
   community.general.homebrew:
     name: ios-deploy

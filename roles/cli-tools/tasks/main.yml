@@ -160,6 +160,12 @@
   community.general.homebrew:
     name: duckdb
 
+- name: Install Vercel CLI
+  community.general.npm:
+    name: vercel
+    global: yes
+    state: present
+
 - name: Install 1Password CLI
   community.general.homebrew_cask:
     name: 1password-cli

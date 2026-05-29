@@ -46,7 +46,7 @@
     - kotlin
     - ruby
     - xcode
-    - office
+    - { role: office, tags: ["office"] }
     - calendar
     - voice-command
     - obsidian
