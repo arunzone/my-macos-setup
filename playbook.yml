@@ -58,7 +58,7 @@
     - { role: aws, tags: ["aws"] }
     - media
     - photography
-    - claude-code
+    - { role: claude-code, tags: ["claude-code"] }
     - { role: llm, tags: ["llm"] }
 
   post_tasks:

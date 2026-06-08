@@ -1,3 +1,41 @@
 - name: Install Claude Code
   ansible.builtin.shell: curl -fsSL http://claude.ai/install.sh | bash
   register: install_claude_code
+
+- name: Ensure Claude Code hooks directory exists
+  ansible.builtin.file:
+    path: ~/.claude/hooks
+    state: directory
+    mode: "0755"
+
+- name: Install require-explanation PreToolUse hook script
+  ansible.builtin.copy:
+    src: require-explanation.sh
+    dest: ~/.claude/hooks/require-explanation.sh
+    mode: "0755"
+
+- name: Ensure Claude Code settings file exists
+  ansible.builtin.copy:
+    content: "{}\n"
+    dest: ~/.claude/settings.json
+    mode: "0644"
+    force: false
+
+- name: Read current Claude Code settings
+  ansible.builtin.slurp:
+    src: ~/.claude/settings.json
+  register: claude_settings_raw
+
+- name: Merge require-explanation hook into Claude Code settings
+  ansible.builtin.copy:
+    content: "{{ (claude_settings_raw.content | b64decode | from_json) | combine(claude_hooks_block, recursive=true) | to_nice_json }}\n"
+    dest: ~/.claude/settings.json
+    mode: "0644"
+  vars:
+    claude_hooks_block:
+      hooks:
+        PreToolUse:
+          - matcher: Bash
+            hooks:
+              - type: command
+                command: ~/.claude/hooks/require-explanation.sh
