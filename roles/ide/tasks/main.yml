@@ -6,11 +6,11 @@
   community.general.homebrew_cask:
     name: pycharm-ce
 
-- name: Install Windsurf
-  community.general.homebrew:
-    name: windsurf
+- name: Install Devin Desktop
+  community.general.homebrew_cask:
+    name: devin-desktop
 
-- name: Install cline for vscode/windsurf code generation in background
+- name: Install cline for vscode/devin code generation in background
   community.general.npm:
     name: cline
     global: yes
