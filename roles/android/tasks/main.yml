@@ -1,8 +1,4 @@
-- name: Install Android Studio
+- name: Install OpenMTP
   community.general.homebrew_cask:
-    name: android-studio
-
-- name: Install Android File Transfer
-  community.general.homebrew_cask:
-    name: android-file-transfer
-  tags: android-file-transfer
+    name: openmtp
+  tags: openmtp

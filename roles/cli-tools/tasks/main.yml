@@ -81,6 +81,10 @@
   community.general.homebrew:
     name: gh,git-lfs,git-filter-repo,bfg
 
+- name: Install actionlint GitHub Actions workflow linter
+  community.general.homebrew:
+    name: actionlint
+
 - name: Install zsh-completions
   community.general.homebrew:
     name: zsh-completions
@@ -159,6 +163,41 @@
 - name: Install DuckDB CLI
   community.general.homebrew:
     name: duckdb
+
+- name: Install pandoc document converter
+  community.general.homebrew:
+    name: pandoc
+
+# HTML/CSS-based PDF engine for pandoc (--pdf-engine=weasyprint).
+# Maintained replacement for wkhtmltopdf, which was abandoned upstream
+# and removed from Homebrew.
+- name: Install WeasyPrint HTML-to-PDF engine for pandoc
+  community.general.homebrew:
+    name: weasyprint
+
+# Pandoc needs a LaTeX engine (pdflatex/xelatex) to generate PDFs;
+# BasicTeX provides it without the full 5+ GB MacTeX distribution.
+# Its pkg installer runs `sudo installer`, so use the askpass helper
+# created in playbook.yml pre_tasks.
+- name: Install BasicTeX for pandoc PDF generation via askpass
+  block:
+    - name: Stage transient sudo password for askpass helper
+      ansible.builtin.copy:
+        dest: ~/.ansible/.sudo_pass
+        mode: "0600"
+        content: "{{ become_password }}"
+      no_log: true
+
+    - name: Install BasicTeX for pandoc PDF generation
+      community.general.homebrew_cask:
+        name: basictex
+      environment:
+        SUDO_ASKPASS: "{{ ansible_facts['env']['HOME'] }}/.ansible/sudo_askpass.sh"
+  always:
+    - name: Remove transient sudo password
+      ansible.builtin.file:
+        path: ~/.ansible/.sudo_pass
+        state: absent
 
 - name: Install Vercel CLI
   community.general.npm:

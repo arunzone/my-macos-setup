@@ -8,4 +8,4 @@ eval "$(/${brew_path}/bin/brew shellenv)" &&
 
 interpreter=`which python3`
 
-ansible-playbook -i "localhost," -c local -K -e "ansible_python_interpreter='${interpreter}'" playbook.yml "$@"
+ansible-playbook -i "localhost," -c local -e "ansible_python_interpreter='${interpreter}'" playbook.yml "$@"

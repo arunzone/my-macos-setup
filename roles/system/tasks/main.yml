@@ -9,3 +9,11 @@
 - name: System monitor for the menu bar
   community.general.homebrew_cask:
     name: stats
+
+- name: Install Deskreen to use any device with a browser as an extended display
+  community.general.homebrew_cask:
+    name: deskreen
+
+- name: Install BetterDisplay for display resolution, brightness and HiDPI control
+  community.general.homebrew_cask:
+    name: betterdisplay

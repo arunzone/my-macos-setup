@@ -18,9 +18,26 @@
   community.general.homebrew_cask:
     name: google-cloud-sdk
 
-- name: Install Firebase CLI
-  community.general.homebrew:
-    name: firebase-cli
+# Uses the askpass helper created in playbook.yml pre_tasks.
+- name: Install pkg-based casks requiring sudo via askpass
+  block:
+    - name: Stage transient sudo password for askpass helper
+      ansible.builtin.copy:
+        dest: ~/.ansible/.sudo_pass
+        mode: "0600"
+        content: "{{ become_password }}"
+      no_log: true
+
+    - name: Install AWS Session Manager Plugin
+      community.general.homebrew_cask:
+        name: session-manager-plugin
+      environment:
+        SUDO_ASKPASS: "{{ ansible_facts['env']['HOME'] }}/.ansible/sudo_askpass.sh"
+  always:
+    - name: Remove transient sudo password
+      ansible.builtin.file:
+        path: ~/.ansible/.sudo_pass
+        state: absent
 
 - name: Install Terraform
   community.general.homebrew:
