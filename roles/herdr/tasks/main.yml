@@ -1,0 +1,3 @@
+- name: Install herdr coding agent multiplexer
+  community.general.homebrew:
+    name: herdr

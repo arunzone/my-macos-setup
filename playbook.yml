@@ -87,6 +87,7 @@
     - media
     - photography
     - { role: claude-code, tags: ["claude-code"] }
+    - { role: herdr, tags: ["herdr"] }
     - { role: llm, tags: ["llm"] }
 
   post_tasks:
