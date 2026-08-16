@@ -1,3 +1,13 @@
 - name: Install herdr coding agent multiplexer
   community.general.homebrew:
     name: herdr
+
+- name: List installed herdr integrations
+  ansible.builtin.command: herdr integration list
+  register: herdr_integrations
+  changed_when: false
+  failed_when: false
+
+- name: Install claude integration for herdr
+  ansible.builtin.command: herdr integration install claude
+  when: "'claude' not in herdr_integrations.stdout"
