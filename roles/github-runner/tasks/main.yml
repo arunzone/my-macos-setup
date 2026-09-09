@@ -23,6 +23,10 @@
     state: directory
     mode: "0755"
 
+- name: Install GNU tar required by unarchive
+  community.general.homebrew:
+    name: gnu-tar
+
 - name: Download and unpack runner
   vars:
     github_runner_version: "{{ github_runner_release.stdout | regex_replace('^v', '') }}"
