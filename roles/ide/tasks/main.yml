@@ -6,15 +6,10 @@
   community.general.homebrew_cask:
     name: pycharm-ce
 
-- name: Check for Devin Desktop installed outside Homebrew
-  ansible.builtin.stat:
-    path: /Applications/Devin.app
-  register: ide_devin_app
-
 - name: Install Devin Desktop
   community.general.homebrew_cask:
     name: devin-desktop
-  when: not ide_devin_app.stat.exists
+  when: "'devin-desktop' not in skipped_casks"
 
 - name: Install cline for vscode/devin code generation in background
   community.general.npm:

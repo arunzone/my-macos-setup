@@ -11,6 +11,12 @@
     ansible_become_password: "{{ become_password }}"
     node_version: v22.14.0
 
+    # Apps that may arrive outside Homebrew (MDM, self-updaters); Homebrew refuses
+    # to install a cask over them, so those cask tasks are skipped when found.
+    external_apps:
+      - { cask: 1password, app: /Applications/1Password.app }
+      - { cask: devin-desktop, app: /Applications/Devin.app }
+
   # pkg-based casks run `sudo installer`; the module hands this over via SUDO_ASKPASS.
   module_defaults:
     community.general.homebrew_cask:
@@ -25,6 +31,31 @@
       ansible.builtin.command: brew --prefix
       register: brew_path
       changed_when: false
+
+    - name: List casks already managed by Homebrew
+      tags: always
+      ansible.builtin.command: brew list --cask
+      register: brew_casks
+      changed_when: false
+
+    - name: Check for apps installed outside Homebrew
+      tags: always
+      ansible.builtin.stat:
+        path: "{{ item.app }}"
+      loop: "{{ external_apps }}"
+      loop_control:
+        label: "{{ item.cask }}"
+      register: external_apps_stat
+
+    - name: Set casks to skip
+      tags: always
+      ansible.builtin.set_fact:
+        skipped_casks: >-
+          {{ external_apps_stat.results
+             | selectattr('stat.exists')
+             | map(attribute='item.cask')
+             | reject('in', brew_casks.stdout_lines)
+             | list }}
 
     - name: Add brew to shell
       ansible.builtin.blockinfile:

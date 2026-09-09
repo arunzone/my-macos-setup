@@ -5,6 +5,7 @@
 - name: Install 1Password password manager
   community.general.homebrew_cask:
     name: 1password
+  when: "'1password' not in skipped_casks"
 
 - name: Install TablePlus database management tool
   community.general.homebrew_cask:
