@@ -40,9 +40,14 @@
     name: bundler
     executable: ~/.rbenv/shims/gem
 
+- name: Install tap for tflint
+  community.general.homebrew_tap:
+    name: terraform-linters/tap
+    trust: true
+
 - name: Install tflint Terraform linting tool
   community.general.homebrew:
-    name: tflint
+    name: terraform-linters/tap/tflint
 
 - name: Install terraform-docs for generating Terraform documentation
   community.general.homebrew:
