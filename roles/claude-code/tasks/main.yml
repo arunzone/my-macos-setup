@@ -4,15 +4,6 @@
     executable: /bin/bash
     creates: ~/.local/bin/claude
 
-- name: Add ~/.local/bin to PATH
-  ansible.builtin.blockinfile:
-    create: true
-    path: ~/.zshrc
-    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR LOCAL BIN"
-    mode: "0644"
-    block: |
-      export PATH="$HOME/.local/bin:$PATH"
-
 - name: Ensure Claude Code hooks directory exists
   ansible.builtin.file:
     path: ~/.claude/hooks
