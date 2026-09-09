@@ -40,7 +40,7 @@
 # jenv versions are symlinks into /Library/Java; drop the ones whose JDK was uninstalled.
 - name: Prune jenv versions whose JDK is gone
   ansible.builtin.command:
-    cmd: find {{ ansible_env.HOME }}/.jenv/versions -type l ! -exec test -e {} ; -print -delete
+    cmd: find {{ ansible_facts['env']['HOME'] }}/.jenv/versions -type l ! -exec test -e {} ; -print -delete
   register: java_jenv_pruned
   changed_when: java_jenv_pruned.stdout != ""
 
