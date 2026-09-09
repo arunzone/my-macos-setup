@@ -36,7 +36,7 @@
 - name: Install pipx
   community.general.homebrew:
     name: pipx
-  register: pipx_install
+  register: python_pipx_install
 
 - name: Install uv (Python package and tool manager)
   community.general.homebrew:
@@ -45,7 +45,7 @@
 - name: Install pip-outdated via pipx
   ansible.builtin.command:
     cmd: pipx install pip-outdated
-  when: pipx_install is succeeded
+  when: python_pipx_install is succeeded
 
 - name: Ensure Vim bundle directory exists
   ansible.builtin.file:
@@ -61,7 +61,7 @@
     version: HEAD
   loop:
     - { repo: "https://github.com/Vimjas/vim-python-pep8-indent.git", dest: "vim-python-pep8-indent" }
-  register: git_clone
+  register: python_git_clone
   retries: 5
   delay: 10
-  until: git_clone is succeeded
+  until: python_git_clone is succeeded
