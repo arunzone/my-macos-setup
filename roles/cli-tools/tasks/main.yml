@@ -89,6 +89,17 @@
   community.general.homebrew:
     name: zsh-completions
 
+# compaudit refuses completions from group- or world-writable directories.
+- name: Secure zsh completion directories
+  ansible.builtin.file:
+    path: "{{ brew_path.stdout_lines[0] }}/{{ item }}"
+    state: directory
+    mode: g-w,o-w
+  loop:
+    - share
+    - share/zsh
+    - share/zsh/site-functions
+
 - name: Setup zsh-completions
   ansible.builtin.blockinfile:
     create: true
