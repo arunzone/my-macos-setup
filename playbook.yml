@@ -19,6 +19,7 @@
       - { cask: dropbox, app: /Applications/Dropbox.app }
       - { cask: google-chrome, app: /Applications/Google Chrome.app }
       - { cask: handbrake, app: /Applications/HandBrake.app }
+      - { cask: iterm2, app: /Applications/iTerm.app }
       - { cask: slack, app: /Applications/Slack.app }
       - { cask: zoom, app: /Applications/zoom.us.app }
 
