@@ -9,4 +9,3 @@
 - name: System monitor for the menu bar
   community.general.homebrew_cask:
     name: stats
-
