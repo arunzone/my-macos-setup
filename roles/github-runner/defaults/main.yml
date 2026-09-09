@@ -1,3 +1,4 @@
 ---
 github_runner_dir: "{{ ansible_facts['env']['HOME'] }}/actions-runner"
 github_runner_labels: tart
+github_runner_account: "{{ github_runner_repo.split('/')[0] }}"

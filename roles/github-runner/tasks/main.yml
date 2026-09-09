@@ -12,6 +12,12 @@
     github_runner_repo: "{{ github_runner_repo_lookup.stdout }}"
   when: github_runner_repo is not defined
 
+- name: Read gh token for the repository owner's account
+  ansible.builtin.command: gh auth token --user {{ github_runner_account }}
+  register: github_runner_gh_token
+  changed_when: false
+  no_log: true
+
 - name: Look up latest runner release
   ansible.builtin.command: gh api repos/actions/runner/releases/latest --jq .tag_name
   register: github_runner_release
@@ -43,6 +49,8 @@
 
 - name: Request registration token
   ansible.builtin.command: gh api -X POST repos/{{ github_runner_repo }}/actions/runners/registration-token --jq .token
+  environment:
+    GH_TOKEN: "{{ github_runner_gh_token.stdout }}"
   register: github_runner_token
   changed_when: false
   no_log: true
