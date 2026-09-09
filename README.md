@@ -22,6 +22,8 @@ Anything after `./build.sh` is passed to `ansible-playbook`, e.g. `./build.sh --
 
 Roles tagged `appstore` need an Apple ID signed in to the App Store; skip them with `--skip-tags appstore`.
 
+Every role carries a tag of its own name, so a run that failed part-way can resume from that role with `--tags`, listing the roles from the failed one onward in playbook order. Do not use `--start-at-task`; it skips the pre-tasks that later roles depend on.
+
 ### Additional Steps
 
 * if you encounter "Ignore insecure directories and continue [y] or abort compinit [n]?" in your terminal try: `compaudit | xargs chmod g-w`
