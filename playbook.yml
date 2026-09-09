@@ -8,11 +8,13 @@
       private: true
 
   vars:
-    # Drive Ansible's own become and the Homebrew pkg-cask askpass helper from a
-    # single prompted value (replaces the -K prompt); see infrastructure-as-code role.
     ansible_become_password: "{{ become_password }}"
-
     node_version: v22.14.0
+
+  # pkg-based casks run `sudo installer`; the module hands this over via SUDO_ASKPASS.
+  module_defaults:
+    community.general.homebrew_cask:
+      sudo_password: "{{ become_password }}"
 
   # nvm is only sourced in interactive zsh, so expose its node/npm to every task.
   environment:
@@ -44,23 +46,6 @@
       ansible.builtin.hostname:
         name: "{{ ansible_facts['user_id'] }}-mac"
       become: true
-
-    # Created in pre_tasks so every role (cli-tools, infrastructure-as-code, ...)
-    # can install pkg-based casks that shell out to `sudo installer`.
-    # tags: always so tag-scoped runs (e.g. --tags cli-tools) still create it.
-    - name: Create sudo askpass helper for unattended pkg cask installs
-      tags: always
-      ansible.builtin.copy:
-        dest: ~/.ansible/sudo_askpass.sh
-        mode: "0700"
-        content: |
-          #!/bin/sh
-          # Emits the sudo password so Homebrew's nested, non-interactive
-          # `sudo installer` for pkg-based casks can authenticate without a TTY.
-          # Reads a transient 0600 file (not an env var) because Homebrew scrubs
-          # its environment before shelling out, which would strip a passed value.
-          # This script itself holds no secret.
-          cat "{{ ansible_facts['env']['HOME'] }}/.ansible/.sudo_pass"
 
   roles:
 

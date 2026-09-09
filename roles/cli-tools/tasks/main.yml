@@ -177,27 +177,9 @@
 
 # Pandoc needs a LaTeX engine (pdflatex/xelatex) to generate PDFs;
 # BasicTeX provides it without the full 5+ GB MacTeX distribution.
-# Its pkg installer runs `sudo installer`, so use the askpass helper
-# created in playbook.yml pre_tasks.
-- name: Install BasicTeX for pandoc PDF generation via askpass
-  block:
-    - name: Stage transient sudo password for askpass helper
-      ansible.builtin.copy:
-        dest: ~/.ansible/.sudo_pass
-        mode: "0600"
-        content: "{{ become_password }}"
-      no_log: true
-
-    - name: Install BasicTeX for pandoc PDF generation
-      community.general.homebrew_cask:
-        name: basictex
-      environment:
-        SUDO_ASKPASS: "{{ ansible_facts['env']['HOME'] }}/.ansible/sudo_askpass.sh"
-  always:
-    - name: Remove transient sudo password
-      ansible.builtin.file:
-        path: ~/.ansible/.sudo_pass
-        state: absent
+- name: Install BasicTeX for pandoc PDF generation
+  community.general.homebrew_cask:
+    name: basictex
 
 # Typst-based PDF engine for pandoc (--pdf-engine=typst).
 # Faster, lighter alternative to LaTeX for PDF generation.
