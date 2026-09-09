@@ -4,6 +4,7 @@
   register: wacom_installed
   changed_when: false
   failed_when: false
+  check_mode: false
 
 # A newer driver must be removed with the Wacom Tablet Utility first.
 - name: Install Wacom driver {{ wacom_driver_version }}
