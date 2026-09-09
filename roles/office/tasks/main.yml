@@ -1,6 +1,12 @@
-- name: Install Cocoapods dependency manager
+- name: Remove Cocoapods dependency manager
   community.general.homebrew:
     name: cocoapods
+    state: absent
+
+- name: Remove Cocoapods spec repo cache
+  ansible.builtin.file:
+    path: ~/.cocoapods
+    state: absent
 
 - name: Install 1Password password manager
   community.general.homebrew_cask:
@@ -52,10 +58,6 @@
 - name: Install The Unarchiver
   community.general.homebrew_cask:
     name: the-unarchiver
-
-- name: Install App Cleaner
-  community.general.homebrew_cask:
-    name: appcleaner
 
 - name: Install flycut clipboard manager
   community.general.homebrew_cask:
