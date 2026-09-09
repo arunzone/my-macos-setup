@@ -1,7 +1,7 @@
 ---
-# 6.4.11-2 is the last driver that supports the Intuos Pro PTH-451/651/851.
-wacom_driver_version: 6.4.11-2
+# 6.4.10-3 is the last driver that supports the Intuos Pro PTH-451/651/851 (per the 6.4.11-2 notes).
+wacom_driver_version: 6.4.10-3
 wacom_driver_url: "https://cdn.wacom.com/u/productsupport/drivers/mac/professional/WacomTablet_{{ wacom_driver_version }}.dmg"
-wacom_driver_checksum: sha256:d5bdd8a327923414526b918aa6460322732e4ccdf41d17a952ede41dee96f5f0
+wacom_driver_checksum: sha256:9f740930f3ccefb453d80a4eb7d78acba5f6373f9dd4310bf859e59df2bf5106
 wacom_driver_image: "/tmp/WacomTablet_{{ wacom_driver_version }}.dmg"
 wacom_driver_mount: "/tmp/WacomTablet_{{ wacom_driver_version }}"
