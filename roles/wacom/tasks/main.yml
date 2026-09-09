@@ -1,0 +1,45 @@
+---
+- name: Read installed Wacom driver version
+  ansible.builtin.command: defaults read "/Applications/Wacom Tablet.localized/Wacom Center.app/Contents/Info.plist" CFBundleShortVersionString
+  register: wacom_installed
+  changed_when: false
+  failed_when: false
+
+# A newer driver must be removed with the Wacom Tablet Utility first.
+- name: Install Wacom driver {{ wacom_driver_version }}
+  when: wacom_installed.stdout != wacom_driver_version
+  block:
+    - name: Download driver image
+      ansible.builtin.get_url:
+        url: "{{ wacom_driver_url }}"
+        dest: "{{ wacom_driver_image }}"
+        checksum: "{{ wacom_driver_checksum }}"
+        mode: "0644"
+
+    - name: Ensure mount point exists
+      ansible.builtin.file:
+        path: "{{ wacom_driver_mount }}"
+        state: directory
+        mode: "0755"
+
+    - name: Mount driver image
+      ansible.builtin.command: hdiutil attach -nobrowse -readonly -mountpoint {{ wacom_driver_mount }} {{ wacom_driver_image }}
+      changed_when: false
+
+    - name: Run driver installer
+      ansible.builtin.command: installer -pkg "{{ wacom_driver_mount }}/Install Wacom Tablet.pkg" -target /
+      become: true
+      changed_when: true
+  always:
+    - name: Unmount driver image
+      ansible.builtin.command: hdiutil detach {{ wacom_driver_mount }} -quiet
+      changed_when: false
+      failed_when: false
+
+    - name: Remove driver image and mount point
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ wacom_driver_image }}"
+        - "{{ wacom_driver_mount }}"
