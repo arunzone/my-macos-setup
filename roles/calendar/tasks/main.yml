@@ -1,3 +1,14 @@
-- name: Install Notion Calendar
+- name: Remove Notion Calendar
   community.general.homebrew_cask:
     name: notion-calendar
+    state: absent
+
+- name: Remove Notion Calendar leftover data
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - ~/Library/Application Support/Notion Calendar
+    - ~/Library/Application Support/Caches/cron-updater
+    - ~/Library/Preferences/com.cron.electron.plist
+    - ~/Library/HTTPStorages/com.cron.electron
