@@ -27,6 +27,20 @@
   community.general.homebrew:
     name: hashicorp/tap/terraform
 
+- name: Ensure terraform plugin cache directory exists
+  ansible.builtin.file:
+    path: ~/.terraform.d/plugin-cache
+    state: directory
+    mode: "0755"
+
+# Providers download once here and are linked into each module's .terraform.
+- name: Point terraform at the shared plugin cache
+  ansible.builtin.copy:
+    dest: ~/.terraformrc
+    mode: "0644"
+    content: |
+      plugin_cache_dir = "$HOME/.terraform.d/plugin-cache"
+
 - name: Install OpenTofu open source replacement for Terraform
   community.general.homebrew:
     name: opentofu
