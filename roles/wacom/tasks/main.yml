@@ -6,7 +6,15 @@
   failed_when: false
   check_mode: false
 
-# A newer driver must be removed with the Wacom Tablet Utility first.
+- name: Refuse to downgrade over an installed driver
+  ansible.builtin.fail:
+    msg: >-
+      Wacom driver {{ wacom_installed.stdout }} is installed and the pkg will not downgrade.
+      Remove it with the Wacom Tablet Utility (Tablet Software > Uninstall), restart, then rerun.
+  when:
+    - wacom_installed.stdout != ""
+    - wacom_installed.stdout is version(wacom_driver_version, '>')
+
 - name: Install Wacom driver {{ wacom_driver_version }}
   when: wacom_installed.stdout != wacom_driver_version
   block:
