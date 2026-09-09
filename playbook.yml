@@ -20,6 +20,7 @@
       - { cask: google-chrome, app: /Applications/Google Chrome.app }
       - { cask: handbrake, app: /Applications/HandBrake.app }
       - { cask: slack, app: /Applications/Slack.app }
+      - { cask: zoom, app: /Applications/zoom.us.app }
 
   # pkg-based casks run `sudo installer`; the module hands this over via SUDO_ASKPASS.
   module_defaults:

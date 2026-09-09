@@ -5,6 +5,7 @@
 - name: Install zoom for internet telephony
   community.general.homebrew_cask:
     name: zoom
+  when: "'zoom' not in skipped_casks"
 
 - name: Install Chrome browser
   community.general.homebrew_cask:
