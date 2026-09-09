@@ -12,9 +12,16 @@
       export PATH="$HOME/.jenv/bin:$PATH"
       eval "$(jenv init -)"
 
+- name: Ensure jenv plugins directory exists
+  ansible.builtin.file:
+    path: ~/.jenv/plugins
+    state: directory
+    mode: "0755"
+
+# `enable-plugin` is a shell function from `jenv init`; this is the command behind it.
 - name: Enable jenv export plugin
   ansible.builtin.command:
-    cmd: jenv enable-plugin export
+    cmd: jenv sh-enable-plugin export
   args:
     creates: ~/.jenv/plugins/export
 
