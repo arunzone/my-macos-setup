@@ -34,6 +34,7 @@
 
   pre_tasks:
     - name: Get brew path
+      tags: always
       ansible.builtin.command: brew --prefix
       register: brew_path
       changed_when: false
@@ -64,6 +65,7 @@
              | list }}
 
     - name: Add brew to shell
+      tags: always
       ansible.builtin.blockinfile:
         create: true
         path: ~/.zprofile
@@ -74,6 +76,7 @@
 
     # pipx, uv, claude and it2 all install into ~/.local/bin.
     - name: Add ~/.local/bin to shell PATH
+      tags: always
       ansible.builtin.blockinfile:
         create: true
         path: ~/.zprofile
