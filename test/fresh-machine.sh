@@ -17,7 +17,7 @@ export PATH="/opt/homebrew/bin:$PATH"
 repo_dir="$(cd "$(dirname "$0")/.." && pwd)"
 work_dir="$(mktemp -d)"
 ssh_key="${work_dir}/id_ed25519"
-ssh_opts=(-i "$ssh_key" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR)
+ssh_opts=(-i "$ssh_key" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -o ServerAliveInterval=30 -o ServerAliveCountMax=4)
 run_pid=""
 vm_ip=""
 
@@ -70,7 +70,7 @@ tart clone "$TART_IMAGE" "$VM_NAME"
 tart set "$VM_NAME" --cpu "$VM_CPU" --memory "$VM_MEMORY_MB" --disk-size "$VM_DISK_GB"
 
 log "Booting"
-tart run "$VM_NAME" --no-graphics --no-audio &
+taskpolicy -b tart run "$VM_NAME" --no-graphics --no-audio &
 run_pid=$!
 vm_ip="$(tart ip "$VM_NAME" --wait 180)"
 wait_for_ssh

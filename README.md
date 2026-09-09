@@ -34,7 +34,7 @@ Three layers, each a separate job in `.github/workflows/main.yml`:
 |---|---|---|
 | `lint` | Ubuntu runner | ansible-lint findings, syntax errors |
 | `existing-machine` | GitHub-hosted macOS runner | upgrade-path regressions on an already provisioned Mac |
-| `fresh-machine` | self-hosted Apple Silicon runner | new-machine breakage: missing dependencies, ordering, first-run prompts |
+| `fresh-machine` | self-hosted Apple Silicon runner, nightly and on manual dispatch | new-machine breakage: missing dependencies, ordering, first-run prompts |
 
 ### Fresh machine locally
 
