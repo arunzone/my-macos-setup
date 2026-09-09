@@ -75,8 +75,8 @@
     . "$(brew --prefix nvm)/nvm.sh" &&
     nvm use {{ node_version }} &&
     npm install markdown2confluence-cws --global
-  register: npm_install_md2conf
-  changed_when: "'added' in npm_install_md2conf.stdout"
+  register: node_npm_install_md2conf
+  changed_when: "'added' in node_npm_install_md2conf.stdout"
 
 - name: Install js-beautify
   ansible.builtin.shell: >
@@ -102,8 +102,8 @@
     . "$(brew --prefix nvm)/nvm.sh" &&
     nvm use {{ node_version }} &&
     npm install md-to-pdf --global
-  register: npm_install_md2pdf
-  changed_when: "'added' in npm_install_md2pdf.stdout"
+  register: node_npm_install_md2pdf
+  changed_when: "'added' in node_npm_install_md2pdf.stdout"
 
 - name: Install vim plugin
   ansible.builtin.git:
