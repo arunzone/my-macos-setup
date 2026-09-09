@@ -27,6 +27,13 @@
     state: link
     src: "{{ docker_buildx_prefix.stdout }}/bin/docker-buildx"
 
+# Provides docker-credential-osxkeychain so registry logins are stored in the
+# macOS Keychain instead of base64 in ~/.docker/config.json.
+# Enable with "credsStore": "osxkeychain" in ~/.docker/config.json, then re-login.
+- name: Install docker-credential-helper for Keychain-backed registry logins
+  community.general.homebrew:
+    name: docker-credential-helper
+
 - name: Install lima-additional-guestagents
   community.general.homebrew:
     name: lima-additional-guestagents

@@ -199,6 +199,12 @@
         path: ~/.ansible/.sudo_pass
         state: absent
 
+# Typst-based PDF engine for pandoc (--pdf-engine=typst).
+# Faster, lighter alternative to LaTeX for PDF generation.
+- name: Install Typst PDF engine for pandoc
+  community.general.homebrew:
+    name: typst
+
 - name: Install Vercel CLI
   community.general.npm:
     name: vercel

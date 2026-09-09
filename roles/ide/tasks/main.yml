@@ -26,3 +26,10 @@
     global: yes
     state: present
   tags: [ide, gemini-cli]
+
+- name: Install OpenAI's Codex CLI
+  community.general.npm:
+    name: '@openai/codex'
+    global: yes
+    state: present
+  tags: [ide, codex-cli]

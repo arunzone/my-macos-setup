@@ -81,7 +81,7 @@
     - plantuml
     - semgrep
     - security
-    - internet
+    - { role: internet, tags: ["internet"] }
     - { role: infrastructure-as-code, tags: ["infrastructure-as-code"] }
     - { role: aws, tags: ["aws"] }
     - media
@@ -89,6 +89,7 @@
     - { role: claude-code, tags: ["claude-code"] }
     - { role: herdr, tags: ["herdr"] }
     - { role: llm, tags: ["llm"] }
+    - { role: alto, tags: ["alto"] }
 
   post_tasks:
 
