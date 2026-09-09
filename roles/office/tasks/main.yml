@@ -50,6 +50,7 @@
 - name: Install Dropbox for online storage
   community.general.homebrew_cask:
     name: dropbox
+  when: "'dropbox' not in skipped_casks"
 
 - name: Install mounty for NTFS volumes
   community.general.homebrew_cask:
@@ -78,14 +79,33 @@
 - name: Install Slack
   community.general.homebrew_cask:
     name: slack
+  when: "'slack' not in skipped_casks"
 
 - name: Install loom for screen recording
   community.general.homebrew_cask:
     name: loom
 
-- name: Install notion
+- name: Remove notion
   community.general.homebrew_cask:
     name: notion
+    state: absent
+
+- name: Find notion per-host preference files
+  ansible.builtin.find:
+    paths: ~/Library/Preferences/ByHost
+    patterns: "notion.id.*"
+  register: office_notion_byhost
+
+- name: Remove notion leftover data
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: >-
+    {{ office_notion_byhost.files | map(attribute='path') | list + [
+         '~/Library/Application Support/Notion',
+         '~/Library/Application Support/Caches/notion-updater',
+         '~/Library/Preferences/notion.id.plist',
+         '~/Library/HTTPStorages/notion.id'] }}
 
 - name: Install postman
   community.general.homebrew_cask:

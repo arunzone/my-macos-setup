@@ -16,6 +16,10 @@
     external_apps:
       - { cask: 1password, app: /Applications/1Password.app }
       - { cask: devin-desktop, app: /Applications/Devin.app }
+      - { cask: dropbox, app: /Applications/Dropbox.app }
+      - { cask: google-chrome, app: /Applications/Google Chrome.app }
+      - { cask: handbrake, app: /Applications/HandBrake.app }
+      - { cask: slack, app: /Applications/Slack.app }
 
   # pkg-based casks run `sudo installer`; the module hands this over via SUDO_ASKPASS.
   module_defaults:

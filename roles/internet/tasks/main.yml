@@ -9,6 +9,7 @@
 - name: Install Chrome browser
   community.general.homebrew_cask:
     name: google-chrome
+  when: "'google-chrome' not in skipped_casks"
 
 - name: Install Brave browser
   community.general.homebrew_cask:

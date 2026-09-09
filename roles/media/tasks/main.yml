@@ -9,3 +9,4 @@
 - name: Install handbrake for video transcoding
   community.general.homebrew_cask:
     name: handbrake
+  when: "'handbrake' not in skipped_casks"
