@@ -12,6 +12,12 @@
     # single prompted value (replaces the -K prompt); see infrastructure-as-code role.
     ansible_become_password: "{{ become_password }}"
 
+    node_version: v22.14.0
+
+  # nvm is only sourced in interactive zsh, so expose its node/npm to every task.
+  environment:
+    PATH: "{{ lookup('env', 'HOME') }}/.nvm/versions/node/{{ node_version }}/bin:{{ lookup('env', 'PATH') }}"
+
   pre_tasks:
     - name: Get brew path
       ansible.builtin.command: brew --prefix
@@ -73,7 +79,7 @@
     - golang
     - kotlin
     - ruby
-    - xcode
+    - { role: xcode, tags: ["xcode", "appstore"] }
     - { role: office, tags: ["office"] }
     - calendar
     - voice-command
@@ -90,6 +96,7 @@
     - { role: herdr, tags: ["herdr"] }
     - { role: llm, tags: ["llm"] }
     - { role: alto, tags: ["alto"] }
+    - { role: github-runner, tags: ["github-runner", "never"] }
 
   post_tasks:
 

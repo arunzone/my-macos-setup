@@ -1,6 +1,7 @@
 - name: Install tap for hashicorp
   community.general.homebrew_tap:
     name: hashicorp/tap
+    trust: true
 
 - name: Install Ansible for configuration management
   community.general.homebrew:
@@ -136,7 +137,17 @@
 - name: Install tap for pipedream
   community.general.homebrew_tap:
     name: pipedreamhq/pd-cli
+    trust: true
 
 - name: Install pipedream CLI
   community.general.homebrew:
     name: pipedreamhq/pd-cli/pipedream
+
+- name: Install tap for tart
+  community.general.homebrew_tap:
+    name: openai/tools
+    trust: true
+
+- name: Install tart for running macOS virtual machines
+  community.general.homebrew:
+    name: openai/tools/tart

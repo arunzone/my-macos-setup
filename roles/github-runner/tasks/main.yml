@@ -1,0 +1,78 @@
+---
+- name: Detect repository slug
+  ansible.builtin.command: gh repo view --json nameWithOwner --jq .nameWithOwner
+  args:
+    chdir: "{{ playbook_dir }}"
+  register: github_runner_repo_lookup
+  changed_when: false
+  when: github_runner_repo is not defined
+
+- name: Set repository slug
+  ansible.builtin.set_fact:
+    github_runner_repo: "{{ github_runner_repo_lookup.stdout }}"
+  when: github_runner_repo is not defined
+
+- name: Look up latest runner release
+  ansible.builtin.command: gh api repos/actions/runner/releases/latest --jq .tag_name
+  register: github_runner_release
+  changed_when: false
+
+- name: Ensure runner directory exists
+  ansible.builtin.file:
+    path: "{{ github_runner_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Download and unpack runner
+  vars:
+    github_runner_version: "{{ github_runner_release.stdout | regex_replace('^v', '') }}"
+  ansible.builtin.unarchive:
+    src: "https://github.com/actions/runner/releases/download/v{{ github_runner_version }}/actions-runner-osx-arm64-{{ github_runner_version }}.tar.gz"
+    dest: "{{ github_runner_dir }}"
+    remote_src: true
+    creates: "{{ github_runner_dir }}/config.sh"
+
+- name: Check whether runner is registered
+  ansible.builtin.stat:
+    path: "{{ github_runner_dir }}/.runner"
+  register: github_runner_registered
+
+- name: Request registration token
+  ansible.builtin.command: gh api -X POST repos/{{ github_runner_repo }}/actions/runners/registration-token --jq .token
+  register: github_runner_token
+  changed_when: false
+  no_log: true
+  when: not github_runner_registered.stat.exists
+
+- name: Register runner
+  ansible.builtin.command: >
+    ./config.sh --unattended
+    --url https://github.com/{{ github_runner_repo }}
+    --token {{ github_runner_token.stdout }}
+    --name {{ ansible_facts['hostname'] }}
+    --labels {{ github_runner_labels }}
+  args:
+    chdir: "{{ github_runner_dir }}"
+  no_log: true
+  changed_when: true
+  when: not github_runner_registered.stat.exists
+
+- name: Install runner service
+  ansible.builtin.command: ./svc.sh install
+  args:
+    chdir: "{{ github_runner_dir }}"
+    creates: "{{ github_runner_dir }}/.service"
+
+- name: Check runner service status
+  ansible.builtin.command: ./svc.sh status
+  args:
+    chdir: "{{ github_runner_dir }}"
+  register: github_runner_status
+  changed_when: false
+
+- name: Start runner service
+  ansible.builtin.command: ./svc.sh start
+  args:
+    chdir: "{{ github_runner_dir }}"
+  changed_when: true
+  when: "'Started:' not in github_runner_status.stdout"

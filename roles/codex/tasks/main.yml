@@ -4,5 +4,5 @@
     . "$(brew --prefix nvm)/nvm.sh" &&
     nvm use v22.14.0 &&
     npm install @openai/codex --global
-  register: npm_install_codex
-  changed_when: "'added' in npm_install_codex.stdout"
+  register: codex_npm_install
+  changed_when: "'added' in codex_npm_install.stdout"

@@ -1,6 +1,8 @@
 - name: Install Claude Code
-  ansible.builtin.shell: curl -fsSL http://claude.ai/install.sh | bash
-  register: install_claude_code
+  ansible.builtin.shell: set -o pipefail && curl -fsSL https://claude.ai/install.sh | bash
+  args:
+    executable: /bin/bash
+    creates: ~/.local/bin/claude
 
 - name: Ensure Claude Code hooks directory exists
   ansible.builtin.file:

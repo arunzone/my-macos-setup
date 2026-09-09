@@ -6,37 +6,17 @@
     name: mas
     state: present
 
-- name: Check Mac App Store login status
-  ansible.builtin.command: mas account
-  register: mas_account
-  changed_when: false
-  failed_when: false
+# mas 5+ removed `account`; sign in to the App Store GUI before running this role.
+- name: Get Xcode from Mac App Store
+  ansible.builtin.command: mas get 497799835
+  args:
+    creates: /Applications/Xcode.app
+  become: true
 
-- name: Set fact if signed in to Mac App Store
-  ansible.builtin.set_fact:
-    mas_signed_in: "{{ 'Not signed in' not in mas_account.stdout }}"
-
-- name: Show Mac App Store login reminder (if not signed in)
-  ansible.builtin.debug:
-    msg: >-
-      You are not signed in to the Mac App Store (mas). Please open the App Store and sign in.
-      After signing in, re-run this role to install Xcode automatically.
-  when: not mas_signed_in
-
-- name: Install Xcode from Mac App Store (if signed in)
-  community.general.mas:
-    id: 497799835
-    state: present
-  when: mas_signed_in
-
-- name: Wait for Xcode.app to appear (after mas install)
+- name: Check for Xcode developer directory
   ansible.builtin.stat:
     path: /Applications/Xcode.app/Contents/Developer
   register: xcode_devdir
-  retries: 30
-  delay: 20
-  until: xcode_devdir.stat.exists or not mas_signed_in
-  changed_when: false
 
 - name: Get current developer directory
   ansible.builtin.command: xcode-select -p

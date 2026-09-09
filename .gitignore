@@ -3,3 +3,4 @@
 *.retry
 *.log
 *.iml
+.DS_Store

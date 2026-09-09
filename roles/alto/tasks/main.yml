@@ -1,0 +1,19 @@
+# Alto work tooling.
+- name: Install Linear issue tracker
+  community.general.homebrew_cask:
+    name: linear
+
+- name: Tap schpet Homebrew repository for the Linear CLI
+  community.general.homebrew_tap:
+    name: schpet/tap
+    trust: true
+    state: present
+
+- name: Install Linear CLI
+  community.general.homebrew:
+    name: schpet/tap/linear
+
+- name: Link Linear CLI into Homebrew bin
+  ansible.builtin.command: brew link schpet/tap/linear
+  args:
+    creates: /opt/homebrew/bin/linear

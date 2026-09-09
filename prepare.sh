@@ -1,6 +1,6 @@
 #!/bin/bash
 
-chsh -s /bin/zsh &&
+[ "$SHELL" = /bin/zsh ] || chsh -s /bin/zsh &&
 
 export PATH="$PATH:/opt/homebrew/bin/" &&
 
@@ -10,7 +10,7 @@ brew_path=`brew --prefix` &&
 
 eval "$(${brew_path}/bin/brew shellenv)" &&
 
-/usr/sbin/softwareupdate --install-rosetta --agree-to-license &&
+sudo /usr/sbin/softwareupdate --install-rosetta --agree-to-license &&
 
 brew update && brew upgrade && brew upgrade --cask &&
 

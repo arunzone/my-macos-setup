@@ -1,0 +1,3 @@
+---
+github_runner_dir: "{{ ansible_facts['env']['HOME'] }}/actions-runner"
+github_runner_labels: tart

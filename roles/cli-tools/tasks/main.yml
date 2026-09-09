@@ -208,7 +208,7 @@
 - name: Install Vercel CLI
   community.general.npm:
     name: vercel
-    global: yes
+    global: true
     state: present
 
 - name: Install 1Password CLI

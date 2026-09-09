@@ -1,24 +1,44 @@
 name: Test
 
 on:
-  workflow_dispatch: {}
   push:
+    branches: [main]
   pull_request:
   schedule:
     - cron: '0 0 * * *'
+  workflow_dispatch: {}
 
 jobs:
-  build:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install ansible ansible-lint
+      - run: ansible-lint
+      - run: ansible-playbook -i localhost, --syntax-check playbook.yml
+
+  existing-machine:
+    needs: lint
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - run: brew install ansible
+      - run: ./build.sh -e become_password=unused --skip-tags appstore
+        env:
+          ANSIBLE_FORCE_COLOR: '1'
 
-      - name: Prepare
-        run: |
-          ./bin/prepare-github.sh
-
-      - name: Provision
-        run: |
-          ./build.sh
+  fresh-machine:
+    if: github.event_name != 'pull_request'
+    needs: lint
+    runs-on: [self-hosted, macOS, ARM64, tart]
+    timeout-minutes: 300
+    concurrency:
+      group: fresh-machine
+    steps:
+      - uses: actions/checkout@v4
+      - run: test/fresh-machine.sh
         env:
           ANSIBLE_FORCE_COLOR: '1'
