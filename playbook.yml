@@ -38,12 +38,14 @@
       ansible.builtin.command: brew --prefix
       register: brew_path
       changed_when: false
+      check_mode: false
 
     - name: List casks already managed by Homebrew
       tags: always
       ansible.builtin.command: brew list --cask
       register: brew_casks
       changed_when: false
+      check_mode: false
 
     - name: Check for apps installed outside Homebrew
       tags: always
