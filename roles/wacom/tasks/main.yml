@@ -35,8 +35,12 @@
       ansible.builtin.command: hdiutil attach -nobrowse -readonly -mountpoint {{ wacom_driver_mount }} {{ wacom_driver_image }}
       changed_when: false
 
+    # Wacom's install scripts use $USER and $HOME to pick the login session and home to act on.
     - name: Run driver installer
       ansible.builtin.command: installer -pkg "{{ wacom_driver_mount }}/Install Wacom Tablet.pkg" -target /
+      environment:
+        USER: "{{ ansible_facts['user_id'] }}"
+        HOME: "{{ ansible_facts['env']['HOME'] }}"
       become: true
       changed_when: true
   always:
