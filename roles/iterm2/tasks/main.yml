@@ -1,0 +1,68 @@
+---
+- name: Read installed iTerm2 version
+  ansible.builtin.command: defaults read "{{ iterm2_app }}/Contents/Info.plist" CFBundleShortVersionString
+  register: iterm2_installed
+  changed_when: false
+  failed_when: false
+  check_mode: false
+
+# The cask's uninstall stanza quits iTerm2, which would kill the shell running this playbook,
+# so drop Homebrew's record of it instead and leave the app bundle for the pinned install below.
+- name: Forget the Homebrew iTerm2 cask
+  ansible.builtin.file:
+    path: "{{ brew_path.stdout_lines[0] }}/Caskroom/iterm2"
+    state: absent
+  when: "'iterm2' in brew_casks.stdout_lines"
+
+# Replacing the bundle under a running iTerm2 is fine, as with brew upgrade; relaunch it afterwards.
+- name: Install iTerm2 {{ iterm2_version }}
+  when: iterm2_installed.stdout != iterm2_version
+  block:
+    - name: Download iTerm2 archive
+      ansible.builtin.get_url:
+        url: "{{ iterm2_url }}"
+        dest: "{{ iterm2_archive }}"
+        checksum: "{{ iterm2_checksum }}"
+        mode: "0644"
+
+    - name: Remove the installed iTerm2
+      ansible.builtin.file:
+        path: "{{ iterm2_app }}"
+        state: absent
+
+    - name: Extract iTerm2 into /Applications
+      ansible.builtin.command: ditto -x -k {{ iterm2_archive }} /Applications
+      changed_when: true
+  always:
+    - name: Remove iTerm2 archive
+      ansible.builtin.file:
+        path: "{{ iterm2_archive }}"
+        state: absent
+
+# iTerm2 rewrites its plist on quit, so these only stick if iTerm2 isn't running.
+# Restart iTerm2 after the playbook for the changes to take effect.
+- name: Disable iTerm2 automatic update checks so it stays on the pinned version
+  community.general.osx_defaults:
+    domain: com.googlecode.iterm2
+    key: SUEnableAutomaticChecks
+    type: bool
+    value: false
+    state: present
+
+- name: Enable iTerm2 Python API
+  community.general.osx_defaults:
+    domain: com.googlecode.iterm2
+    key: EnableAPIServer
+    type: bool
+    value: true
+    state: present
+
+- name: Install iTerm2 shell integration and it2 utilities
+  ansible.builtin.shell: /bin/sh -c "$(curl -fsSL https://iterm2.com/shell_integration/install_shell_integration_and_utilities.sh)"
+  args:
+    creates: ~/.iterm2/it2copy
+
+- name: Install it2 CLI for controlling iTerm2 via Python API
+  ansible.builtin.command: uv tool install it2
+  args:
+    creates: ~/.local/bin/it2

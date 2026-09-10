@@ -22,6 +22,8 @@ Anything after `./build.sh` is passed to `ansible-playbook`, e.g. `./build.sh --
 
 Roles tagged `appstore` need an Apple ID signed in to the App Store; skip them with `--skip-tags appstore`.
 
+iTerm2 is installed from iterm2.com and pinned to `iterm2_version` in `roles/iterm2/defaults/main.yml` with automatic update checks off, because 3.7 makes herdr freeze for seconds on every focus switch ([herdr#3266](https://github.com/herdrdev/herdr/issues/3266)). Bump the version and checksum once herdr ships the fix.
+
 Hardware-specific roles are opt-in: `./build.sh --tags wacom` installs the last Wacom driver that supports the Intuos Pro PTH-651 (remove any newer driver with the Wacom Tablet Utility first).
 
 Every role carries a tag of its own name, so a run that failed part-way can resume from that role with `--tags`, listing the roles from the failed one onward in playbook order. Do not use `--start-at-task`; it skips the pre-tasks that later roles depend on.

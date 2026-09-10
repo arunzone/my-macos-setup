@@ -19,7 +19,6 @@
       - { cask: dropbox, app: /Applications/Dropbox.app }
       - { cask: google-chrome, app: /Applications/Google Chrome.app }
       - { cask: handbrake, app: /Applications/HandBrake.app }
-      - { cask: iterm2, app: /Applications/iTerm.app }
       - { cask: slack, app: /Applications/Slack.app }
       - { cask: zoom, app: /Applications/zoom.us.app }
 
@@ -106,6 +105,7 @@
     - { role: docker, tags: ["docker"] }
     - { role: python, tags: ["python"] }
     - { role: cli-tools, tags: ["cli-tools"] }
+    - { role: iterm2, tags: ["iterm2"] }
     - { role: vim, tags: ["vim"] }
     - { role: system, tags: ["system"] }
     - { role: java, tags: ["java"] }

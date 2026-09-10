@@ -1,0 +1,11 @@
+---
+# iTerm2 3.7.0 started answering the CSI ?996n appearance query that herdr sends whenever the
+# window regains focus. herdr then re-queries all 256 palette colours and iTerm2 answers one per
+# frame, so keyboard and mouse input freeze for ~4 s on every app switch (herdrdev/herdr#3266).
+# 3.6.x ignores the query. Bump this once herdr stops re-sweeping the palette on focus gain.
+iterm2_version: 3.6.11
+iterm2_archive_name: "iTerm2-{{ iterm2_version | replace('.', '_') }}.zip"
+iterm2_url: "https://iterm2.com/downloads/stable/{{ iterm2_archive_name }}"
+iterm2_checksum: sha256:36e78c5049560eaa8e122224f6652eb4b229c61cd5e7332d6d25b5c36f7398e7
+iterm2_archive: "/tmp/{{ iterm2_archive_name }}"
+iterm2_app: /Applications/iTerm.app
