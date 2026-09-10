@@ -1,0 +1,78 @@
+---
+- name: Read installed OpenTabletDriver release
+  ansible.builtin.slurp:
+    src: "{{ opentabletdriver_app }}/Contents/release"
+  register: opentabletdriver_installed
+  failed_when: false
+
+- name: Install OpenTabletDriver {{ opentabletdriver_version }}
+  when: (opentabletdriver_installed.content | default('') | b64decode | trim) != opentabletdriver_version
+  block:
+    - name: Download release archive
+      ansible.builtin.get_url:
+        url: "{{ opentabletdriver_url }}"
+        dest: "{{ opentabletdriver_archive }}"
+        checksum: "{{ opentabletdriver_checksum }}"
+        mode: "0644"
+
+    - name: Remove previous app bundle
+      ansible.builtin.file:
+        path: "{{ opentabletdriver_app }}"
+        state: absent
+
+    - name: Install GNU tar required by unarchive
+      community.general.homebrew:
+        name: gnu-tar
+
+    - name: Extract app bundle into /Applications
+      ansible.builtin.unarchive:
+        src: "{{ opentabletdriver_archive }}"
+        dest: /Applications
+        remote_src: true
+
+    # Unsigned upstream; an ad-hoc signature keeps macOS privacy grants attached to the app.
+    - name: Sign app bundle ad hoc
+      ansible.builtin.command: codesign --force --deep --sign - {{ opentabletdriver_app }}
+      changed_when: true
+
+    - name: Record installed release
+      ansible.builtin.copy:
+        content: "{{ opentabletdriver_version }}\n"
+        dest: "{{ opentabletdriver_app }}/Contents/release"
+        mode: "0644"
+  always:
+    - name: Remove release archive
+      ansible.builtin.file:
+        path: "{{ opentabletdriver_archive }}"
+        state: absent
+
+- name: Ensure user LaunchAgents directory exists
+  ansible.builtin.file:
+    path: ~/Library/LaunchAgents
+    state: directory
+    mode: "0755"
+
+- name: Install daemon launch agent
+  ansible.builtin.copy:
+    src: net.opentabletdriver.daemon.plist
+    dest: ~/Library/LaunchAgents/net.opentabletdriver.daemon.plist
+    mode: "0644"
+  register: opentabletdriver_agent
+
+- name: Check whether the daemon agent is loaded
+  ansible.builtin.command: launchctl print gui/{{ ansible_facts['user_uid'] }}/net.opentabletdriver.daemon
+  register: opentabletdriver_agent_state
+  changed_when: false
+  failed_when: false
+
+- name: Reload daemon agent after a change
+  ansible.builtin.command: launchctl bootout gui/{{ ansible_facts['user_uid'] }}/net.opentabletdriver.daemon
+  when: opentabletdriver_agent.changed and opentabletdriver_agent_state.rc == 0
+  changed_when: true
+
+- name: Load daemon agent
+  ansible.builtin.command: >
+    launchctl bootstrap gui/{{ ansible_facts['user_uid'] }}
+    {{ ansible_facts['env']['HOME'] }}/Library/LaunchAgents/net.opentabletdriver.daemon.plist
+  when: opentabletdriver_agent.changed or opentabletdriver_agent_state.rc != 0
+  changed_when: true

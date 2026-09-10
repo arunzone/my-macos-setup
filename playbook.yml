@@ -135,3 +135,4 @@
     - { role: alto, tags: ["alto"] }
     - { role: github-runner, tags: ["github-runner", "never"] }
     - { role: wacom, tags: ["wacom", "never"] }
+    - { role: opentabletdriver, tags: ["opentabletdriver", "never"] }
