@@ -1,7 +1,8 @@
 ---
-# 6.4.10-3 is the last driver listing the Intuos Pro PTH-651, but its pen driver never starts on macOS 26; 6.4.9-2 does.
-wacom_driver_version: 6.4.9-2
+# 6.4.10-3 is the last driver supporting the Intuos Pro PTH-651 (macOS 12-15). On macOS 26 its
+# pen driver and Wacom Center crash in the analytics client; 6.4.9-2 ships the same code.
+wacom_driver_version: 6.4.10-3
 wacom_driver_url: "https://cdn.wacom.com/u/productsupport/drivers/mac/professional/WacomTablet_{{ wacom_driver_version }}.dmg"
-wacom_driver_checksum: sha256:e5e1d000bb9560b72e144290f2eacfbb1174ac4ad01b484e1b4b983fe4642380
+wacom_driver_checksum: sha256:9f740930f3ccefb453d80a4eb7d78acba5f6373f9dd4310bf859e59df2bf5106
 wacom_driver_image: "/tmp/WacomTablet_{{ wacom_driver_version }}.dmg"
 wacom_driver_mount: "/tmp/WacomTablet_{{ wacom_driver_version }}"
