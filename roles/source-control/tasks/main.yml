@@ -5,3 +5,27 @@
 - name: Install tig text-mode interface for Git
   community.general.homebrew:
     name: tig
+
+# ~/.ssh/config: github.com defaults to the Alto key; personal repos use the
+# github-personal alias (remote form: github-personal:<owner>/<repo>.git).
+# Only the config is managed here; the private keys never live in this repo.
+- name: Ensure ~/.ssh directory exists
+  ansible.builtin.file:
+    path: ~/.ssh
+    state: directory
+    mode: "0700"
+
+- name: Configure personal GitHub SSH alias
+  ansible.builtin.blockinfile:
+    create: true
+    path: ~/.ssh/config
+    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR GITHUB-PERSONAL"
+    mode: "0600"
+    block: |
+      Host github-personal
+        HostName github.com
+        User git
+        IdentityFile ~/.ssh/id_ed25519
+        IdentitiesOnly yes
+        AddKeysToAgent yes
+        UseKeychain yes

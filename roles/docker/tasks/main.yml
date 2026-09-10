@@ -27,6 +27,20 @@
     state: link
     src: "{{ docker_buildx_prefix.stdout }}/bin/docker-buildx"
 
+# Homebrew's docker formula ships the bare CLI; `docker compose` only exists once
+# the docker-compose binary is linked into cli-plugins, exactly like buildx above.
+# Without it docker reports "unknown shorthand flag: 'f' in -f" on `docker compose -f`.
+- name: Determine docker-compose installation prefix
+  ansible.builtin.command: brew --prefix docker-compose
+  register: docker_compose_prefix
+  changed_when: false
+
+- name: Link docker-compose into cli-plugins
+  ansible.builtin.file:
+    path: ~/.docker/cli-plugins/docker-compose
+    state: link
+    src: "{{ docker_compose_prefix.stdout }}/bin/docker-compose"
+
 # Provides docker-credential-osxkeychain so registry logins are stored in the
 # macOS Keychain instead of base64 in ~/.docker/config.json.
 # Enable with "credsStore": "osxkeychain" in ~/.docker/config.json, then re-login.
