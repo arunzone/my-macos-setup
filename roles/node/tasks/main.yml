@@ -51,6 +51,15 @@
   register: node_npm_install_yarn
   changed_when: "'added' in node_npm_install_yarn.stdout"
 
+- name: Install pnpm
+  ansible.builtin.shell: >
+    export NVM_DIR="$HOME/.nvm" &&
+    . "$(brew --prefix nvm)/nvm.sh" &&
+    nvm use {{ node_version }} &&
+    npm install pnpm --global
+  register: node_npm_install_pnpm
+  changed_when: "'added' in node_npm_install_pnpm.stdout"
+
 - name: Install Gitinspector
   ansible.builtin.shell: >
     export NVM_DIR="$HOME/.nvm" &&
