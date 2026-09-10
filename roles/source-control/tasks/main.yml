@@ -6,6 +6,58 @@
   community.general.homebrew:
     name: tig
 
+- name: Set git identity
+  community.general.git_config:
+    scope: global
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop: "{{ {'user.name': source_control_git_user_name, 'user.email': source_control_git_user_email} | dict2items }}"
+
+- name: Set git settings
+  community.general.git_config:
+    scope: global
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop: "{{ source_control_git_settings | dict2items }}"
+
+- name: Set git aliases
+  community.general.git_config:
+    scope: global
+    name: alias.{{ item.key }}
+    value: "{{ item.value }}"
+  loop: "{{ source_control_git_aliases | dict2items }}"
+
+- name: Ensure git config directory exists
+  ansible.builtin.file:
+    path: ~/.config/git
+    state: directory
+    mode: "0755"
+
+- name: Install global git ignore
+  ansible.builtin.copy:
+    src: gitignore
+    dest: ~/.config/git/ignore
+    mode: "0644"
+
+- name: Remove hand-written git shell aliases
+  ansible.builtin.lineinfile:
+    path: ~/.zshrc
+    regexp: "{{ item }}"
+    state: absent
+  loop:
+    - '^alias g="git"$'
+    - '^alias gfp="git fetch && git pull --rebase"$'
+
+- name: Add git shell aliases
+  ansible.builtin.blockinfile:
+    create: true
+    path: ~/.zshrc
+    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR GIT ALIASES"
+    mode: "0644"
+    block: |
+      alias g="git"
+      alias gfp="git fetch && git pull --rebase"
+
 # ~/.ssh/config: github.com defaults to the Alto key; personal repos use the
 # github-personal alias (remote form: github-personal:<owner>/<repo>.git).
 # Only the config is managed here; the private keys never live in this repo.

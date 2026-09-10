@@ -7,6 +7,25 @@
   args:
     creates: ~/.oh-my-zsh
 
+- name: Remove hand-written ohmyzsh settings
+  ansible.builtin.lineinfile:
+    path: ~/.zshrc
+    regexp: "{{ item }}"
+    state: absent
+  loop:
+    - '^DISABLE_MAGIC_FUNCTIONS="true"$'
+    - '^GITSTATUS_ENABLE_ASYNCHRONOUS_QUERIES=0$'
+
+# Must precede `source $ZSH/oh-my-zsh.sh`; DISABLE_MAGIC_FUNCTIONS is read at load.
+- name: Setup ohmyzsh settings
+  ansible.builtin.blockinfile:
+    path: ~/.zshrc
+    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR OHMYZSH SETTINGS"
+    insertbefore: '^source \$ZSH/oh-my-zsh\.sh'
+    block: |
+      DISABLE_MAGIC_FUNCTIONS="true"
+      GITSTATUS_ENABLE_ASYNCHRONOUS_QUERIES=0
+
 - name: Setup ohmyzsh theme
   ansible.builtin.lineinfile:
     path: ~/.zshrc
@@ -80,6 +99,16 @@
 - name: Install GitHub tools
   community.general.homebrew:
     name: gh,git-lfs,git-filter-repo,bfg
+
+- name: Read git credential helper for GitHub
+  community.general.git_config_info:
+    scope: global
+    name: credential.https://github.com.helper
+  register: cli_tools_gh_credential
+
+- name: Use gh as the git credential helper for GitHub
+  ansible.builtin.command: gh auth setup-git
+  when: "'gh auth git-credential' not in (cli_tools_gh_credential.config_value | default(''))"
 
 - name: Install actionlint GitHub Actions workflow linter
   community.general.homebrew:

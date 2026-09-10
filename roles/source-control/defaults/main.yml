@@ -1,0 +1,27 @@
+---
+source_control_git_user_name: arun
+source_control_git_user_email: arunkumar@alto.com.ai
+
+source_control_git_settings:
+  push.default: current
+  push.autoSetupRemote: "true"
+  init.defaultBranch: main
+  filter.lfs.required: "true"
+  filter.lfs.clean: git-lfs clean -- %f
+  filter.lfs.smudge: git-lfs smudge -- %f
+  filter.lfs.process: git-lfs filter-process
+  url.git@github-personal:arunzone/.insteadOf: git@github.com:arunzone/
+
+source_control_git_aliases:
+  s: status
+  d: diff
+  co: checkout
+  last: log -1 HEAD
+  ca: commit --amend --no-edit
+  cm: commit -m
+  pr: pull --rebase
+  ap: add -p
+  p: push -u
+  cl: clone
+  x: clean -dxf
+  lg: "log --graph --pretty=tformat:'%Cred%h%Creset %C(bold blue)%<(20,trunc)%an%Creset %C(auto)%d%Creset %s %Cgreen(%cr) '"

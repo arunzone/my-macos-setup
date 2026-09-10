@@ -20,6 +20,7 @@
   ansible.builtin.command: brew --prefix docker-buildx
   register: docker_buildx_prefix
   changed_when: false
+  check_mode: false
 
 - name: Link docker-buildx into cli-plugins
   ansible.builtin.file:
@@ -34,6 +35,7 @@
   ansible.builtin.command: brew --prefix docker-compose
   register: docker_compose_prefix
   changed_when: false
+  check_mode: false
 
 - name: Link docker-compose into cli-plugins
   ansible.builtin.file:
@@ -60,3 +62,22 @@
     mode: "0644"
     block: |
       export DOCKER_HOST="unix://$HOME/.colima/docker.sock"
+
+- name: Remove hand-written docker shell aliases
+  ansible.builtin.lineinfile:
+    path: ~/.zshrc
+    regexp: "{{ item }}"
+    state: absent
+  loop:
+    - '^alias dk="docker"$'
+    - '^alias dl="docker logs"$'
+
+- name: Add docker shell aliases
+  ansible.builtin.blockinfile:
+    create: true
+    path: ~/.zshrc
+    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR DOCKER ALIASES"
+    mode: "0644"
+    block: |
+      alias dk="docker"
+      alias dl="docker logs"
