@@ -100,16 +100,6 @@
   community.general.homebrew:
     name: gh,git-lfs,git-filter-repo,bfg
 
-- name: Read git credential helper for GitHub
-  community.general.git_config_info:
-    scope: global
-    name: credential.https://github.com.helper
-  register: cli_tools_gh_credential
-
-- name: Use gh as the git credential helper for GitHub
-  ansible.builtin.command: gh auth setup-git
-  when: "'gh auth git-credential' not in (cli_tools_gh_credential.config_value | default(''))"
-
 - name: Install actionlint GitHub Actions workflow linter
   community.general.homebrew:
     name: actionlint
