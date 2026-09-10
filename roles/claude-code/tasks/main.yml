@@ -10,11 +10,18 @@
     state: directory
     mode: "0755"
 
-- name: Install require-explanation PreToolUse hook script
+- name: Install Claude Code hook scripts
   ansible.builtin.copy:
-    src: require-explanation.sh
-    dest: ~/.claude/hooks/require-explanation.sh
+    src: "{{ item }}"
+    dest: ~/.claude/hooks/{{ item }}
     mode: "0755"
+  loop: "{{ claude_code_hooks }}"
+
+- name: Install global Claude Code instructions
+  ansible.builtin.copy:
+    src: CLAUDE.md
+    dest: ~/.claude/CLAUDE.md
+    mode: "0644"
 
 - name: Ensure Claude Code settings file exists
   ansible.builtin.copy:
@@ -26,18 +33,10 @@
 - name: Read current Claude Code settings
   ansible.builtin.slurp:
     src: ~/.claude/settings.json
-  register: claude_settings_raw
+  register: claude_code_settings_raw
 
-- name: Merge require-explanation hook into Claude Code settings
+- name: Merge managed hooks into Claude Code settings
   ansible.builtin.copy:
-    content: "{{ (claude_settings_raw.content | b64decode | from_json) | combine(claude_hooks_block, recursive=true) | to_nice_json }}\n"
+    content: "{{ (claude_code_settings_raw.content | b64decode | from_json) | combine(claude_code_settings, recursive=true) | to_nice_json }}\n"
     dest: ~/.claude/settings.json
     mode: "0644"
-  vars:
-    claude_hooks_block:
-      hooks:
-        PreToolUse:
-          - matcher: Bash
-            hooks:
-              - type: command
-                command: ~/.claude/hooks/require-explanation.sh
