@@ -17,3 +17,13 @@
   ansible.builtin.command: brew link schpet/tap/linear
   args:
     creates: /opt/homebrew/bin/linear
+
+- name: Tap Supabase Homebrew repository for the Supabase CLI
+  community.general.homebrew_tap:
+    name: supabase/tap
+    trust: true
+    state: present
+
+- name: Install Supabase CLI
+  community.general.homebrew:
+    name: supabase/tap/supabase
