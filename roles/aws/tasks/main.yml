@@ -11,9 +11,14 @@
     trust: true
     state: present
 
-- name: Install LocalStack CLI via Homebrew
+- name: Remove deprecated LocalStack CLI
   community.general.homebrew:
     name: localstack-cli
+    state: absent
+
+- name: Install lstk via Homebrew
+  community.general.homebrew_cask:
+    name: lstk
     state: present
 
 # Python packages
