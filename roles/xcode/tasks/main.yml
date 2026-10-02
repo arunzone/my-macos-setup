@@ -12,6 +12,7 @@
   args:
     creates: /Applications/Xcode.app
   become: true
+  register: xcode_install
 
 - name: Check for Xcode developer directory
   ansible.builtin.stat:
@@ -27,6 +28,15 @@
 - name: Set xcode-select to full Xcode app if installed
   ansible.builtin.command: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
   when: xcode_devdir.stat.exists and xcode_select_path.stdout != '/Applications/Xcode.app/Contents/Developer'
+  become: true
+
+- name: Run first-launch tasks for a freshly installed Xcode # noqa: no-handler
+  # Later roles need the license in this run; a handler would fire at play end.
+  ansible.builtin.command: /usr/bin/xcodebuild -runFirstLaunch
+  environment:
+    DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
+  when: xcode_install is changed
+  changed_when: true
   become: true
 
 - name: Xcode download IOS

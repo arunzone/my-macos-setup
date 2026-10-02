@@ -32,19 +32,30 @@
     PATH: "{{ lookup('env', 'HOME') }}/.nvm/versions/node/{{ node_version }}/bin:{{ lookup('env', 'PATH') }}"
 
   pre_tasks:
+    - name: Check for Xcode
+      tags: always
+      ansible.builtin.stat:
+        path: /Applications/Xcode.app/Contents/Developer
+      register: xcode_app
+
     # An Xcode update re-locks brew until first-launch tasks and the license are redone.
     - name: Check whether Xcode first-launch tasks are pending
       tags: always
-      ansible.builtin.command: xcodebuild -checkFirstLaunchStatus
+      ansible.builtin.command: /usr/bin/xcodebuild -checkFirstLaunchStatus
+      environment:
+        DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
       register: xcode_first_launch
       changed_when: false
       failed_when: false
       check_mode: false
+      when: xcode_app.stat.exists
 
     - name: Run Xcode first-launch tasks and accept the license
       tags: always
-      ansible.builtin.command: xcodebuild -runFirstLaunch
-      when: xcode_first_launch.rc != 0
+      ansible.builtin.command: /usr/bin/xcodebuild -runFirstLaunch
+      environment:
+        DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
+      when: xcode_first_launch.rc | default(0) != 0
       changed_when: true
       become: true
 
