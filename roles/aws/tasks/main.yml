@@ -11,11 +11,7 @@
     trust: true
     state: present
 
-- name: Remove deprecated LocalStack CLI
-  community.general.homebrew:
-    name: localstack-cli
-    state: absent
-
+# The cask strips quarantine; lstk binaries are ad-hoc signed, not notarized.
 - name: Install lstk via Homebrew
   community.general.homebrew_cask:
     name: lstk
