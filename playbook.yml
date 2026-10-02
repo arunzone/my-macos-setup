@@ -32,6 +32,22 @@
     PATH: "{{ lookup('env', 'HOME') }}/.nvm/versions/node/{{ node_version }}/bin:{{ lookup('env', 'PATH') }}"
 
   pre_tasks:
+    # An Xcode update re-locks brew until first-launch tasks and the license are redone.
+    - name: Check whether Xcode first-launch tasks are pending
+      tags: always
+      ansible.builtin.command: xcodebuild -checkFirstLaunchStatus
+      register: xcode_first_launch
+      changed_when: false
+      failed_when: false
+      check_mode: false
+
+    - name: Run Xcode first-launch tasks and accept the license
+      tags: always
+      ansible.builtin.command: xcodebuild -runFirstLaunch
+      when: xcode_first_launch.rc != 0
+      changed_when: true
+      become: true
+
     - name: Get brew path
       tags: always
       ansible.builtin.command: brew --prefix

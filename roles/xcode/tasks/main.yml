@@ -29,18 +29,6 @@
   when: xcode_devdir.stat.exists and xcode_select_path.stdout != '/Applications/Xcode.app/Contents/Developer'
   become: true
 
-- name: Run first launch tasks (may be no-op if already done)
-  ansible.builtin.command: sudo xcodebuild -runFirstLaunch
-  become: true
-  changed_when: false
-  failed_when: false
-
-- name: Accept Xcode license (idempotent)
-  ansible.builtin.command: sudo xcodebuild -license accept
-  become: true
-  changed_when: false
-  failed_when: false
-
 - name: Xcode download IOS
   ansible.builtin.command: xcodebuild -downloadPlatform iOS
   become: true
