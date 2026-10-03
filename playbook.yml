@@ -9,7 +9,7 @@
 
   vars:
     ansible_become_password: "{{ become_password }}"
-    node_version: v22.14.0
+    node_version: v24.21.0
 
     # Apps that may arrive outside Homebrew (MDM, self-updaters); Homebrew refuses
     # to install a cask over them, so those cask tasks are skipped when found.
