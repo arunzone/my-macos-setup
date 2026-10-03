@@ -157,6 +157,7 @@
     - { role: media, tags: ["media"] }
     - { role: photography, tags: ["photography"] }
     - { role: claude-code, tags: ["claude-code"] }
+    - { role: codex, tags: ["codex"] }
     - { role: herdr, tags: ["herdr"] }
     - { role: llm, tags: ["llm"] }
     - { role: alto, tags: ["alto"] }
