@@ -1,0 +1,4 @@
+- name: Install headroom CLI for compressing agent context
+  ansible.builtin.command: uv tool install --python 3.13 "headroom-ai[all]"
+  args:
+    creates: ~/.local/bin/headroom

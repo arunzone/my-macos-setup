@@ -130,6 +130,7 @@
     - { role: media, tags: ["media"] }
     - { role: photography, tags: ["photography"] }
     - { role: claude-code, tags: ["claude-code"] }
+    - { role: headroom, tags: ["headroom"] }
     - { role: herdr, tags: ["herdr"] }
     - { role: llm, tags: ["llm"] }
     - { role: alto, tags: ["alto"] }
