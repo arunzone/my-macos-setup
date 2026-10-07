@@ -11,9 +11,10 @@
     trust: true
     state: present
 
-- name: Install LocalStack CLI via Homebrew
-  community.general.homebrew:
-    name: localstack-cli
+# The cask strips quarantine; lstk binaries are ad-hoc signed, not notarized.
+- name: Install lstk via Homebrew
+  community.general.homebrew_cask:
+    name: lstk
     state: present
 
 # Python packages

@@ -1,0 +1,7 @@
+---
+opentabletdriver_version: 0.6.7
+opentabletdriver_release_base: https://github.com/OpenTabletDriver/OpenTabletDriver/releases/download
+opentabletdriver_url: "{{ opentabletdriver_release_base }}/v{{ opentabletdriver_version }}/OpenTabletDriver-{{ opentabletdriver_version }}_osx-x64.tar.gz"
+opentabletdriver_checksum: sha256:c4b0d9eb2aee8ee7be12d0df80f961ea0a7235f54b5f59a2b62efa9b9ec4910e
+opentabletdriver_app: /Applications/OpenTabletDriver.app
+opentabletdriver_archive: "/tmp/OpenTabletDriver-{{ opentabletdriver_version }}.tar.gz"

@@ -12,6 +12,7 @@
   args:
     creates: /Applications/Xcode.app
   become: true
+  register: xcode_install
 
 - name: Check for Xcode developer directory
   ansible.builtin.stat:
@@ -29,17 +30,14 @@
   when: xcode_devdir.stat.exists and xcode_select_path.stdout != '/Applications/Xcode.app/Contents/Developer'
   become: true
 
-- name: Run first launch tasks (may be no-op if already done)
-  ansible.builtin.command: sudo xcodebuild -runFirstLaunch
+- name: Run first-launch tasks for a freshly installed Xcode # noqa: no-handler
+  # Later roles need the license in this run; a handler would fire at play end.
+  ansible.builtin.command: /usr/bin/xcodebuild -runFirstLaunch
+  environment:
+    DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
+  when: xcode_install is changed
+  changed_when: true
   become: true
-  changed_when: false
-  failed_when: false
-
-- name: Accept Xcode license (idempotent)
-  ansible.builtin.command: sudo xcodebuild -license accept
-  become: true
-  changed_when: false
-  failed_when: false
 
 - name: Xcode download IOS
   ansible.builtin.command: xcodebuild -downloadPlatform iOS

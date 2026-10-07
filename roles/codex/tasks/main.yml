@@ -1,8 +1,4 @@
 - name: Install Codex
-  ansible.builtin.shell: >
-    export NVM_DIR="$HOME/.nvm" &&
-    . "$(brew --prefix nvm)/nvm.sh" &&
-    nvm use v22.14.0 &&
-    npm install @openai/codex --global
-  register: codex_npm_install
-  changed_when: "'added' in codex_npm_install.stdout"
+  community.general.npm:
+    name: "@openai/codex"
+    global: true

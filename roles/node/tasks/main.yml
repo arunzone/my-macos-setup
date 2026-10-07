@@ -23,15 +23,17 @@
   register: node_nvm_install
   changed_when: "'already installed' not in node_nvm_install.stdout"
 
-- name: Setup to use LTS
-  ansible.builtin.shell: export NVM_DIR="$HOME/.nvm" && . "$(brew --prefix nvm)/nvm.sh" && nvm use {{ node_version }}
-  register: node_nvm_use
-  changed_when: "'Now using' in node_nvm_use.stdout"
+- name: Get default node version for NVM
+  ansible.builtin.shell: export NVM_DIR="$HOME/.nvm" && . "$(brew --prefix nvm)/nvm.sh" && nvm alias default --no-colors
+  register: node_nvm_default
+  changed_when: false
+  check_mode: false
 
+# Global npm tools install under node_version, so the shell default must match it.
 - name: Set default node version for NVM
-  ansible.builtin.shell: export NVM_DIR="$HOME/.nvm" && . "$(brew --prefix nvm)/nvm.sh" && nvm alias default node
-  register: node_nvm_alias
-  changed_when: "'default -> node' in node_nvm_alias.stdout"
+  ansible.builtin.shell: export NVM_DIR="$HOME/.nvm" && . "$(brew --prefix nvm)/nvm.sh" && nvm alias default {{ node_version }}
+  when: not (node_nvm_default.stdout is search('default -> ' ~ (node_version | regex_escape) ~ '( |$)'))
+  changed_when: true
 
 - name: Install Electron Packager
   ansible.builtin.shell: >

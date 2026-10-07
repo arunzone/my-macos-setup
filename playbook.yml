@@ -9,7 +9,7 @@
 
   vars:
     ansible_become_password: "{{ become_password }}"
-    node_version: v22.14.0
+    node_version: v24.21.0
 
     # Apps that may arrive outside Homebrew (MDM, self-updaters); Homebrew refuses
     # to install a cask over them, so those cask tasks are skipped when found.
@@ -32,6 +32,33 @@
     PATH: "{{ lookup('env', 'HOME') }}/.nvm/versions/node/{{ node_version }}/bin:{{ lookup('env', 'PATH') }}"
 
   pre_tasks:
+    - name: Check for Xcode
+      tags: always
+      ansible.builtin.stat:
+        path: /Applications/Xcode.app/Contents/Developer
+      register: xcode_app
+
+    # An Xcode update re-locks brew until first-launch tasks and the license are redone.
+    - name: Check whether Xcode first-launch tasks are pending
+      tags: always
+      ansible.builtin.command: /usr/bin/xcodebuild -checkFirstLaunchStatus
+      environment:
+        DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
+      register: xcode_first_launch
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      when: xcode_app.stat.exists
+
+    - name: Run Xcode first-launch tasks and accept the license
+      tags: always
+      ansible.builtin.command: /usr/bin/xcodebuild -runFirstLaunch
+      environment:
+        DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
+      when: xcode_first_launch.rc | default(0) != 0
+      changed_when: true
+      become: true
+
     - name: Get brew path
       tags: always
       ansible.builtin.command: brew --prefix
@@ -131,8 +158,10 @@
     - { role: photography, tags: ["photography"] }
     - { role: claude-code, tags: ["claude-code"] }
     - { role: headroom, tags: ["headroom"] }
+    - { role: codex, tags: ["codex"] }
     - { role: herdr, tags: ["herdr"] }
     - { role: llm, tags: ["llm"] }
     - { role: alto, tags: ["alto"] }
     - { role: github-runner, tags: ["github-runner", "never"] }
     - { role: wacom, tags: ["wacom", "never"] }
+    - { role: opentabletdriver, tags: ["opentabletdriver", "never"] }

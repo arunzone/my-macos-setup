@@ -27,3 +27,37 @@
 - name: Install Supabase CLI
   community.general.homebrew:
     name: supabase/tap/supabase
+
+# GitHub Packages needs a read:packages token even to read, so npm update -g fails without it.
+- name: Point the alto npm scope at GitHub Packages
+  ansible.builtin.blockinfile:
+    create: true
+    path: ~/.npmrc
+    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR ALTO NPM"
+    mode: "0600"
+    block: |
+      @alto-com-ai:registry=https://npm.pkg.github.com
+
+- name: Read gh token for the alto account
+  ansible.builtin.command: gh auth token --user {{ alto_github_account }}
+  register: alto_gh_token
+  changed_when: false
+  failed_when: false
+  no_log: true
+  check_mode: false
+
+- name: Store the GitHub Packages token for npm
+  ansible.builtin.lineinfile:
+    path: ~/.npmrc
+    regexp: '^//npm\.pkg\.github\.com/:_authToken='
+    line: "//npm.pkg.github.com/:_authToken={{ alto_gh_token.stdout }}"
+    mode: "0600"
+  no_log: true
+  when: alto_gh_token.rc == 0
+
+- name: Install Alto software-factory globally via npm
+  community.general.npm:
+    name: "@alto-com-ai/software-factory"
+    global: true
+    state: present
+  when: alto_gh_token.rc == 0
