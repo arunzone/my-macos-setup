@@ -1,6 +1,6 @@
-- name: Install Darktable
+- name: Install RawTherapee for raw photo development
   community.general.homebrew_cask:
-    name: darktable
+    name: rawtherapee
 
 - name: Install Upscayl
   community.general.homebrew_cask:
