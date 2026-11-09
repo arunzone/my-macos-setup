@@ -23,6 +23,10 @@
   community.general.homebrew_cask:
     name: session-manager-plugin
 
+- name: Install cloudflared Cloudflare Tunnel client
+  community.general.homebrew:
+    name: cloudflared
+
 - name: Install Terraform
   community.general.homebrew:
     name: hashicorp/tap/terraform
