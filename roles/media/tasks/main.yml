@@ -6,6 +6,10 @@
   community.general.homebrew_cask:
     name: vlc
 
+- name: Install ffmpeg for audio and video conversion
+  community.general.homebrew:
+    name: ffmpeg
+
 - name: Install handbrake for video transcoding
   community.general.homebrew_cask:
     name: handbrake
